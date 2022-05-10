@@ -1,6 +1,7 @@
 package homework1;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Домашнее задание №1 курс Java 3
@@ -79,6 +80,41 @@ public class App {
         }
         System.out.println();
 
+
+        //Задание 3
+        Box<Apple> boxApple = Box.create();
+        boxApple.put(new Apple("Яблоко с дачи", 1f));
+        boxApple.put(new Apple("Яблоко с Турции", 2f));
+        double weightBoxApple = boxApple.getWeight();
+        System.out.println("Вес коробки с яблоками - " + weightBoxApple);
+
+        Box<Orange> boxOrange = Box.create();
+        boxOrange.put(new Orange("Апельсин с дачи", 1f));
+        boxOrange.put(new Orange("Апельсин с Турции", 1f));
+        double weightBoxOrange = boxOrange.getWeight();
+        System.out.println("Вес коробки с апельсинами - " + weightBoxOrange);
+
+        System.out.println("Равна ли коробка с яблоками с коробкой с апельсинами - "+boxApple.compareTo(boxOrange));
+
+
+        Box<Orange> boxOrange2 = Box.create();
+        boxOrange2.put(new Orange("Апельсин с дачи", 0.5f));
+        boxOrange2.put(new Orange("Апельсин с Турции", 0.5f));
+        takeAllFruits(boxOrange.getFruits(),boxOrange2.getFruits());
+        System.out.println("Коробка с яблоками");
+        boxApple.printElements();
+        System.out.println("Коробка первая с апельсинами");
+        boxOrange.printElements();
+        System.out.println("Коробка вторая с апельсинами");
+        boxOrange2.printElements();
+    }
+
+
+    private static <G> void takeAllFruits(ArrayList<? super G> dst, ArrayList<? extends G> src) {
+        for (int i = 0; src.size()!=0;) {
+            dst.add(src.get(i));
+            src.remove(i);
+        }
     }
 
 
