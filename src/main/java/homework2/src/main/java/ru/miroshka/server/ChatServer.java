@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import ru.miroshka.message.AbstractMessage;
-import ru.miroshka.message.ClientListMessage;
-import ru.miroshka.message.ErrorMessage;
-import ru.miroshka.message.SimpleMessage;
+import ru.miroshka.message.*;
 
 public class ChatServer {
 
@@ -23,7 +20,7 @@ public class ChatServer {
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8386);
-             AuthService authService = new InMemoryAuthService()) {
+             AuthService authService = new SQLiteAuthService()) {
             while (true) {
                 System.out.println("Wait client connection...");
                 final Socket socket = serverSocket.accept();
@@ -40,6 +37,12 @@ public class ChatServer {
     }
 
     public void subscribe(ClientHandler client) {
+        clients.put(client.getNick(), client);
+        broadcastClientList();
+    }
+
+    public void changeClient(ClientHandler client,String oldNick) {
+        clients.remove(oldNick);
         clients.put(client.getNick(), client);
         broadcastClientList();
     }
@@ -65,8 +68,12 @@ public class ChatServer {
     public void sendMessageToClient(ClientHandler sender, String to, String message) {
         final ClientHandler receiver = clients.get(to);
         if (receiver != null) {
-            receiver.sendMessage(SimpleMessage.of("от " + sender.getNick() + ": " + message, sender.getNick()));
-            sender.sendMessage(SimpleMessage.of("участнику " + to + ": " + message, sender.getNick()));
+            if(sender!=null) {
+                receiver.sendMessage(SimpleMessage.of("от " + sender.getNick() + ": " + message, sender.getNick()));
+                sender.sendMessage(SimpleMessage.of("участнику " + to + ": " + message, sender.getNick()));
+            }else{
+                receiver.sendMessage(ChangeNick.of(receiver.getNick(),receiver.getNick(),message));
+            }
         } else {
             sender.sendMessage(ErrorMessage.of("Участника с ником " + to + " нет в чате!"));
         }

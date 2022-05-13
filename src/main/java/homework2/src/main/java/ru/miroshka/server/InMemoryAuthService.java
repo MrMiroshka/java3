@@ -31,6 +31,11 @@ public class InMemoryAuthService implements AuthService {
     }
 
     @Override
+    public boolean changeNick(String nick, String newNick) {
+        return false;
+    }
+
+    @Override
     public void close() throws IOException {
         System.out.println("AuthService closed");
     }

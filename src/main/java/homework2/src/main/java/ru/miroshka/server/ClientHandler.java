@@ -5,14 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import ru.miroshka.message.AuthMessage;
-import ru.miroshka.message.AuthOkMessage;
-import ru.miroshka.message.Command;
-import ru.miroshka.message.EndMessage;
-import ru.miroshka.message.ErrorMessage;
-import ru.miroshka.message.AbstractMessage;
-import ru.miroshka.message.SimpleMessage;
-import ru.miroshka.message.PrivateMessage;
+import ru.miroshka.message.*;
 
 public class ClientHandler {
     private final Socket socket;
@@ -25,7 +18,7 @@ public class ClientHandler {
 
     private String nick;
 
-    public ClientHandler(Socket socket, ChatServer server, AuthService authService,int timeAuthLimit) {
+    public ClientHandler(Socket socket, ChatServer server, AuthService authService, int timeAuthLimit) {
         try {
             this.nick = "";
             this.socket = socket;
@@ -147,6 +140,17 @@ public class ClientHandler {
                 System.out.println("Receive message: " + message);
                 if (message.getCommand() == Command.END) {
                     break;
+                }
+                if (message.getCommand() == Command.CHANGENICK) {
+                    final ChangeNick changeNick = (ChangeNick) message;
+                    if (authService.changeNick(changeNick.getNick(), changeNick.getNickNew())) {
+                        this.nick = changeNick.getNickNew();
+                        this.server.changeClient(this,changeNick.getNick());
+                        server.broadcast(SimpleMessage.of("Ник - "+changeNick.getNick()+" сменился успешно на - "+changeNick.getNickNew()+ " !",changeNick.getNickNew()));
+                        server.sendMessageToClient(null, changeNick.getNickNew(), "Ник - "+changeNick.getNick()+" сменился успешно на - "+changeNick.getNickNew()+ " !");
+                    }else{
+                        server.sendMessageToClient(null, changeNick.getNick(), "Смена ника завершилась не удачно ("+changeNick.getNick()+ " на "+changeNick.getNickNew()+")!");
+                    }
                 }
                 if (message.getCommand() == Command.MESSAGE) {
                     final SimpleMessage simpleMessage = (SimpleMessage) message;

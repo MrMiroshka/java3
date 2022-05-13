@@ -8,6 +8,8 @@ public interface AuthService extends Closeable {
 
     void run();
 
+    boolean changeNick(String nick,String newNick);
+
     @Override
     void close() throws IOException;
 }

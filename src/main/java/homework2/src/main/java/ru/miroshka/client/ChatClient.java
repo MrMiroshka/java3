@@ -6,12 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javafx.application.Platform;
-import ru.miroshka.message.AbstractMessage;
-import ru.miroshka.message.AuthOkMessage;
-import ru.miroshka.message.ClientListMessage;
-import ru.miroshka.message.Command;
-import ru.miroshka.message.ErrorMessage;
-import ru.miroshka.message.SimpleMessage;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import ru.miroshka.message.*;
 
 public class ChatClient {
 
@@ -57,65 +54,89 @@ public class ChatClient {
                 Platform.runLater(() -> controller.showError(errorMessage.getError()));
             } else if (message.getCommand() == Command.CLIENTS) {
                 final ClientListMessage clientListMessage = (ClientListMessage) message;
-                controller.updateClientList(clientListMessage.getClients());
+                //this.nick = clientListMessage.getClients();
+                Service service = new Service() {
+                    @Override
+                    protected Task createTask() {
+                        return new Task() {
+                            @Override
+                            protected Object call() throws Exception {
+                                Platform.runLater(() -> {
+                                    controller.updateClientList(clientListMessage.getClients());
+                                });
+                                return null;
+                            }
+                        };
+                    }
+                };
+                service.start();
+
+
             } else if (message.getCommand() == Command.MESSAGE) {
                 final SimpleMessage simpleMessage = (SimpleMessage) message;
                 controller.addMessage(simpleMessage.getNickFrom() + ": " + simpleMessage.getMessage());
+            } else if (message.getCommand() == Command.CHANGENICK) {
+                final ChangeNick changeNick = (ChangeNick) message;
+                if (!this.nick.equals(changeNick.getNickNew())) {
+                    this.nick = changeNick.getNickNew();
+                }
+                else {
+                    controller.addMessage(changeNick.getNick() + ": " + changeNick.getMessage());}
+                }
             }
         }
-    }
 
-    private void waitAuthenticate() throws IOException, ClassNotFoundException {
-        while (true) {
-            final AbstractMessage message = (AbstractMessage) in.readObject();
-            if (message.getCommand() == Command.AUTHOK) {
-                this.nick = ((AuthOkMessage) message).getNick();
-                controller.addMessage("Успешная авторизация под ником " + nick);
-                controller.setAuth(true);
-                break;
-            }
-            if (message.getCommand() == Command.ERROR) {
-                final ErrorMessage errorMessage = (ErrorMessage) message;
-                Platform.runLater(() -> controller.showError(errorMessage.getError()));
+        private void waitAuthenticate () throws IOException, ClassNotFoundException {
+            while (true) {
+                final AbstractMessage message = (AbstractMessage) in.readObject();
+                if (message.getCommand() == Command.AUTHOK) {
+                    this.nick = ((AuthOkMessage) message).getNick();
+                    controller.addMessage("Успешная авторизация под ником " + nick);
+                    controller.setAuth(true);
+                    break;
+                }
+                if (message.getCommand() == Command.ERROR) {
+                    final ErrorMessage errorMessage = (ErrorMessage) message;
+                    Platform.runLater(() -> controller.showError(errorMessage.getError()));
+                }
             }
         }
-    }
 
-    private void closeConnection() {
-        if (socket != null) {
+        private void closeConnection () {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.exit(0);
+        }
+
+        public void sendMessage (AbstractMessage message){
             try {
-                socket.close();
+                System.out.println("Send message: " + message);
+                out.writeObject(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        if (in != null) {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (out != null) {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        System.exit(0);
-    }
 
-    public void sendMessage(AbstractMessage message) {
-        try {
-            System.out.println("Send message: " + message);
-            out.writeObject(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+        public String getNick () {
+            return nick;
         }
     }
-
-    public String getNick() {
-        return nick;
-    }
-}

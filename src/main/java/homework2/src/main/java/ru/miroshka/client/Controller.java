@@ -1,22 +1,17 @@
 package ru.miroshka.client;
 
-import java.util.Collection;
-import java.util.Optional;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import ru.miroshka.message.AuthMessage;
+import ru.miroshka.message.ChangeNick;
 import ru.miroshka.message.PrivateMessage;
 import ru.miroshka.message.SimpleMessage;
+
+import java.util.Collection;
+import java.util.Optional;
 
 public class Controller {
 
@@ -60,7 +55,12 @@ public class Controller {
             client.sendMessage(PrivateMessage.of(nickTo, client.getNick(), message));
             nickTo = null;
         } else {
-            client.sendMessage(SimpleMessage.of(message, client.getNick()));
+            String[] tempMessage = message.split(" ", 2);
+            if ("\\chnick".equals(tempMessage[0]) && tempMessage.length == 2 && tempMessage[1].length() < 20) {
+                client.sendMessage(ChangeNick.of(client.getNick(), tempMessage[1],""));
+            } else {
+                client.sendMessage(SimpleMessage.of(message, client.getNick()));
+            }
         }
         textField.clear();
         textField.requestFocus();
@@ -106,7 +106,6 @@ public class Controller {
             if (nick != null) {
                 this.nickTo = nick;
             }
-//            textField.setText(Command.PRIVATE_MESSAGE.collectMessage(nick, message));
             textField.requestFocus();
             textField.selectEnd();
         }
