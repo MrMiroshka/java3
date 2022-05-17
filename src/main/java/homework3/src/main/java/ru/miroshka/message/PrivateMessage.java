@@ -1,6 +1,8 @@
 package ru.miroshka.message;
 
-public class PrivateMessage extends AbstractMessage {
+import java.io.Serializable;
+
+public class PrivateMessage extends AbstractMessage{
 
     private final String nickTo;
     private final String nickFrom;

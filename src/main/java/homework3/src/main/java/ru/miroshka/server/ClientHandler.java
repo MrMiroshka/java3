@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import ru.miroshka.message.*;
 
@@ -110,8 +111,16 @@ public class ClientHandler {
                         }
                         sendMessage(AuthOkMessage.of(nick));
                         this.nick = nick;
-                        server.broadcast(SimpleMessage.of(nick, "Пользователь " + nick + " зашел в чат"));
                         server.subscribe(this);
+                        ArrayList<PrivateMessage> pm = ChatsArhive.readMessageFromFile(this.nick, (byte) 2);
+                        if (pm!=null){
+                            for (PrivateMessage privateMessage : pm) {
+                                server.sendMessageToClientArhive(privateMessage.getNickFrom(), privateMessage.getNickTo(), privateMessage.getMessage(),this.nick);
+                                //server.sendMessageToClient(privateMessage., this.nick, privateMessage.getMessage());
+                            }
+                        }
+
+                        server.broadcast(SimpleMessage.of(nick, "Пользователь " + nick + " зашел в чат"));
                         break;
                     } else {
                         sendMessage(ErrorMessage.of("Неверные логин и пароль"));
@@ -145,11 +154,11 @@ public class ClientHandler {
                     final ChangeNick changeNick = (ChangeNick) message;
                     if (authService.changeNick(changeNick.getNick(), changeNick.getNickNew())) {
                         this.nick = changeNick.getNickNew();
-                        this.server.changeClient(this,changeNick.getNick());
-                        server.broadcast(SimpleMessage.of("Ник - "+changeNick.getNick()+" сменился успешно на - "+changeNick.getNickNew()+ " !",changeNick.getNickNew()));
-                        server.sendMessageToClient(null, changeNick.getNickNew(), "Ник - "+changeNick.getNick()+" сменился успешно на - "+changeNick.getNickNew()+ " !");
-                    }else{
-                        server.sendMessageToClient(null, changeNick.getNick(), "Смена ника завершилась не удачно ("+changeNick.getNick()+ " на "+changeNick.getNickNew()+")!");
+                        this.server.changeClient(this, changeNick.getNick());
+                        server.broadcast(SimpleMessage.of("Ник - " + changeNick.getNick() + " сменился успешно на - " + changeNick.getNickNew() + " !", changeNick.getNickNew()));
+                        server.sendMessageToClient(null, changeNick.getNickNew(), "Ник - " + changeNick.getNick() + " сменился успешно на - " + changeNick.getNickNew() + " !");
+                    } else {
+                        server.sendMessageToClient(null, changeNick.getNick(), "Смена ника завершилась не удачно (" + changeNick.getNick() + " на " + changeNick.getNickNew() + ")!");
                     }
                 }
                 if (message.getCommand() == Command.MESSAGE) {
@@ -159,6 +168,7 @@ public class ClientHandler {
                 if (message.getCommand() == Command.PRIVATE_MESSAGE) {
                     final PrivateMessage privateMessage = (PrivateMessage) message;
                     server.sendMessageToClient(this, privateMessage.getNickTo(), privateMessage.getMessage());
+                    ChatsArhive.writeMessageToFile(privateMessage.getNickFrom(), privateMessage.getNickTo(), (AbstractMessage) privateMessage, (byte) 2);
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
