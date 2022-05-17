@@ -48,6 +48,7 @@ public class ChatsArhive {
                     }
                     if (count>=100){
                         pm.remove(0);
+                        count--;
                     }
                     pm.add(pmTemp);
                     count++;
