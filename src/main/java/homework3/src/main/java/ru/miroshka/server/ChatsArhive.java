@@ -5,6 +5,7 @@ import ru.miroshka.message.PrivateMessage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class ChatsArhive {
     private static final String MKDIR_NAME = "Arhives";
@@ -12,11 +13,11 @@ public class ChatsArhive {
     public static void writeToFile(AbstractMessage message, byte choiceMessage, String fileName) {
         boolean firstMessage = false;
         final File file = new File(MKDIR_NAME, fileName);
-        if (file.exists()&&file.length()==0) {
+        if (file.exists() && file.length() == 0) {
             firstMessage = true;
         }
 
-        try  (FileOutputStream fOS = new FileOutputStream(MKDIR_NAME + File.separator + fileName, true)){
+        try (FileOutputStream fOS = new FileOutputStream(MKDIR_NAME + File.separator + fileName, true)) {
             if (!firstMessage) {
                 try (AppendingObjectOutputStream objOut = new AppendingObjectOutputStream(fOS)) {
                     objOut.writeObject((PrivateMessage) message);
@@ -31,20 +32,27 @@ public class ChatsArhive {
         }
     }
 
-    public static ArrayList<PrivateMessage> readFromFile(byte choiceMessage, String fileName) {
-        ArrayList<PrivateMessage> pm = null;
+    public static LinkedList<PrivateMessage> readFromFile(byte choiceMessage, String fileName) {
+        //ArrayList<PrivateMessage> pm = null;
+        LinkedList<PrivateMessage> pm = null;
         try (ObjectInputStream objIn = new ObjectInputStream(new
                 FileInputStream(MKDIR_NAME + File.separator + fileName))) {
-            pm = new ArrayList<>();
+            //pm = new ArrayList<>();
+            pm = new LinkedList<>();
+            int count = 0;
             if (choiceMessage == 2) {
-                for (int i = 0; i < 100; i++) {
+                while (true) {
                     PrivateMessage pmTemp = (PrivateMessage) objIn.readObject();
                     if (pmTemp == null) {
                         break;
                     }
+                    if (count>=100){
+                        pm.remove(0);
+                    }
                     pm.add(pmTemp);
+                    count++;
                 }
-                return pm;
+
             }
         } catch (EOFException e) {
             return pm;
@@ -89,7 +97,7 @@ public class ChatsArhive {
     }
 
 
-    public static ArrayList<PrivateMessage> readMessageFromFile(String nameFrom, byte choiceMessage) {
+    public static  LinkedList<PrivateMessage> readMessageFromFile(String nameFrom, byte choiceMessage) {
         String nameFromFull = "history_" + nameFrom + ".txt";
         if (choiceMessage == 2) {
             return readFromFile(choiceMessage, nameFromFull);

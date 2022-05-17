@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import ru.miroshka.message.*;
 
@@ -112,7 +113,7 @@ public class ClientHandler {
                         sendMessage(AuthOkMessage.of(nick));
                         this.nick = nick;
                         server.subscribe(this);
-                        ArrayList<PrivateMessage> pm = ChatsArhive.readMessageFromFile(this.nick, (byte) 2);
+                        LinkedList<PrivateMessage> pm = ChatsArhive.readMessageFromFile(this.nick, (byte) 2);
                         if (pm!=null){
                             for (PrivateMessage privateMessage : pm) {
                                 server.sendMessageToClientArhive(privateMessage.getNickFrom(), privateMessage.getNickTo(), privateMessage.getMessage(),this.nick);
