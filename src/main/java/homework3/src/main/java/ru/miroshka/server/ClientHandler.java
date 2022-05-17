@@ -117,7 +117,6 @@ public class ClientHandler {
                         if (pm!=null){
                             for (PrivateMessage privateMessage : pm) {
                                 server.sendMessageToClientArhive(privateMessage.getNickFrom(), privateMessage.getNickTo(), privateMessage.getMessage(),this.nick);
-                                //server.sendMessageToClient(privateMessage., this.nick, privateMessage.getMessage());
                             }
                         }
 

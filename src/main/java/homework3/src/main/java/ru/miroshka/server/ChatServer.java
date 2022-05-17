@@ -87,11 +87,8 @@ public class ChatServer {
             sender.sendMessage(SimpleMessage.of("участнику " + to + ": " + message, sender.getNick()));
         }
         if (receiver != null && receiver.getNick()==nickFromArhive ) {
-            //receiver.sendMessage(SimpleMessage.of("от " + sender.getNick() + ": " + message, sender.getNick()));
-            receiver.sendMessage(SimpleMessage.of(" " + message, receiver.getNick()));
-        }// else {
-//            receiver.sendMessage(ChangeNick.of(receiver.getNick(), receiver.getNick(), message));
- //       }
+            receiver.sendMessage(SimpleMessage.of(" " + message, from));
+        }
     }
 
 }

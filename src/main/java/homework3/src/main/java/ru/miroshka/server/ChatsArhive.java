@@ -4,7 +4,6 @@ import ru.miroshka.message.AbstractMessage;
 import ru.miroshka.message.PrivateMessage;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ChatsArhive {
@@ -94,7 +93,6 @@ public class ChatsArhive {
         if (nameFrom != nameTo) {
             writeToFile(message, choiceMessage, nameToFull);
         }
-        //        ArrayList<PrivateMessage> pm = readFromFile((byte) 2, nameFromFull);
     }
 
 
