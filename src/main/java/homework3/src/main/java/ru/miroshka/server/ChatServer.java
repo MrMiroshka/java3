@@ -70,8 +70,8 @@ public class ChatServer {
         if (receiver != null) {
             if (sender != null) {
                 //receiver.sendMessage(SimpleMessage.of("от " + sender.getNick() + ": " + message, sender.getNick()));
-                receiver.sendMessage(SimpleMessage.of(" " + message, sender.getNick()));
                 sender.sendMessage(SimpleMessage.of("участнику " + to + ": " + message, sender.getNick()));
+                receiver.sendMessage(SimpleMessage.of(" " + message, sender.getNick()));
             } else {
                 receiver.sendMessage(ChangeNick.of(receiver.getNick(), receiver.getNick(), message));
             }

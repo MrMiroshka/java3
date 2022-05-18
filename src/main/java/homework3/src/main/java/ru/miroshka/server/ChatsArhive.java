@@ -32,11 +32,9 @@ public class ChatsArhive {
     }
 
     public static LinkedList<PrivateMessage> readFromFile(byte choiceMessage, String fileName) {
-        //ArrayList<PrivateMessage> pm = null;
         LinkedList<PrivateMessage> pm = null;
         try (ObjectInputStream objIn = new ObjectInputStream(new
                 FileInputStream(MKDIR_NAME + File.separator + fileName))) {
-            //pm = new ArrayList<>();
             pm = new LinkedList<>();
             int count = 0;
             if (choiceMessage == 2) {
