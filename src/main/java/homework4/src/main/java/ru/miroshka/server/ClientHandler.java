@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import ru.miroshka.message.*;
@@ -33,7 +32,9 @@ public class ClientHandler {
 
 
             server.getService().execute(() -> {
+                server.getListActiveThreads().add(Thread.currentThread());
                 server.getService().execute(() -> {
+                    server.getListActiveThreads().add(Thread.currentThread());
                     try {
                         Thread.sleep(timeAuthLimit);
                         if ("".equals(ClientHandler.this.nick)) {
@@ -43,10 +44,15 @@ public class ClientHandler {
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    } finally {
+                        server.getListActiveThreads().remove(Thread.currentThread());
+                        //System.out.println("Завершился - " + Thread.currentThread().getName());
                     }
                 });
                 authenticate();
                 readMessages();
+                server.getListActiveThreads().remove(Thread.currentThread());
+                //System.out.println("Завершился - " + Thread.currentThread().getName());
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -85,7 +91,7 @@ public class ClientHandler {
     }
 
     private void authenticate() {
-        while (true) {
+        while (true && !Thread.currentThread().isInterrupted()) {
             try {
                 final AbstractMessage message = (AbstractMessage) in.readObject();
                 if (message.getCommand() == Command.AUTH) {
@@ -132,7 +138,7 @@ public class ClientHandler {
 
     private void readMessages() {
         try {
-            while (true) {
+            while (true && !Thread.currentThread().isInterrupted()) {
                 final AbstractMessage message = (AbstractMessage) in.readObject();
                 System.out.println("Receive message: " + message);
                 if (message.getCommand() == Command.END) {

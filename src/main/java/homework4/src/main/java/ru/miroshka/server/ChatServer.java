@@ -5,29 +5,29 @@ import ru.miroshka.message.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 public class ChatServer {
 
     private final Map<String, ClientHandler> clients;
     private final ExecutorService service;
+    private final LinkedList<Thread> listActiveThreads;
 
     public ExecutorService getService() {
         return service;
     }
 
+    public LinkedList<Thread> getListActiveThreads() {
+        return listActiveThreads;
+    }
 
     public ChatServer() {
         this.clients = new HashMap<>();
         this.service = Executors.newCachedThreadPool();
+        this.listActiveThreads = new LinkedList<>();
     }
 
     public void run() {
@@ -39,14 +39,19 @@ public class ChatServer {
                 final Socket socket = serverSocket.accept();
                 new ClientHandler(socket, this, authService, 120000);
                 System.out.println("Client connected");
-                if (asd){break;}
+                //{break;} - для воссозданияошибки- когда основной поток завершился, а другие еще нет
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        List<Runnable> runnables = service.shutdownNow();
-
+        //помечаю все активные потоки - на завершение. Везде где sleep,wait - потоки завершаются сразу (блок try/catch)
+        //но там где бесконечный цикл, нужно дождаться новой итерации.
+        for (Thread thread : this.getListActiveThreads()) {
+            thread.interrupt();
+        }
+        service.shutdownNow();
+        //System.out.println(this.getListThreads().size());
 
     }
 
