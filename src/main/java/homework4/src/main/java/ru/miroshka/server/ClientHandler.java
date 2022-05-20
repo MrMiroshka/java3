@@ -31,35 +31,23 @@ public class ClientHandler {
             this.isClose = false;
             this.timeAuthLimit = timeAuthLimit;
 
-            new Thread(() -> {
-                try {
 
-                    Thread timeThread =
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(timeAuthLimit);
-                                        if ("".equals(ClientHandler.this.nick)) {
-                                            System.out.println("Вышло время для авторизации, соединение с клиентом будет прервано.");
-                                            closeConnection();
+            server.getService().execute(() -> {
+                server.getService().execute(() -> {
+                    try {
+                        Thread.sleep(timeAuthLimit);
+                        if ("".equals(ClientHandler.this.nick)) {
+                            System.out.println("Вышло время для авторизации, соединение с клиентом будет прервано.");
+                            closeConnection();
 
-                                        }
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                    timeThread.setDaemon(true);
-                    timeThread.start();
-
-                    authenticate();
-                    readMessages();
-                } finally {
-                    closeConnection();
-                }
-            }).start();
-
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+                authenticate();
+                readMessages();
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -114,9 +102,9 @@ public class ClientHandler {
                         this.nick = nick;
                         server.subscribe(this);
                         LinkedList<PrivateMessage> pm = ChatsArhive.readMessageFromFile(this.nick, (byte) 2);
-                        if (pm!=null){
+                        if (pm != null) {
                             for (PrivateMessage privateMessage : pm) {
-                                server.sendMessageToClientArhive(privateMessage.getNickFrom(), privateMessage.getNickTo(), privateMessage.getMessage(),this.nick);
+                                server.sendMessageToClientArhive(privateMessage.getNickFrom(), privateMessage.getNickTo(), privateMessage.getMessage(), this.nick);
                             }
                         }
 
