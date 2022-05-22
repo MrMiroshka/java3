@@ -12,5 +12,31 @@
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
     </properties>
-    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/homework2/*</exclude>
+                        <exclude>**/homework3/*</exclude>
+                        <exclude>**/homework4/*</exclude>
+                        <exclude>homework2.src.main.resources.ru.miroshka</exclude>
+                        <exclude>homework3.src.main.resources.ru.miroshka</exclude>
+                        <exclude>homework4</exclude>
+                        <excludeGroupIds>homework2</excludeGroupIds>
+                        <excludeGroupIds>homework3</excludeGroupIds>
+                        <excludeGroupIds>homework4</excludeGroupIds>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
