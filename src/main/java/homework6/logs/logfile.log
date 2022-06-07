@@ -1,0 +1,38 @@
+INFO  2022-06-06 23:02:26 [main] ru.miroshka.server.ChatServer (ChatServer.java:38) - Сервер запущен
+INFO  2022-06-06 23:12:07 [main] ru.miroshka.server.ChatServer (ChatServer.java:38) - Сервер запущен
+ERROR 2022-06-06 23:12:07 [main] ru.miroshka.server.ChatServer (ChatServer.java:39) - e.getMessage()
+INFO  2022-06-07 01:44:38 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 01:44:41 [main] ru.miroshka.server.ChatServer (ChatServer.java:52) - Клиент () подключился
+INFO  2022-06-07 12:36:00 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:36:01 [main] ru.miroshka.server.ChatServer (ChatServer.java:52) - Клиент () подключился
+INFO  2022-06-07 12:38:30 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:42:41 [main] ru.miroshka.server.ChatServer (ChatServer.java:52) - Клиент () подключился
+INFO  2022-06-07 12:49:00 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:49:37 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:49:37 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:50:52 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:50:52 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:52:01 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:52:01 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:52:09 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 12:52:09 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 13:03:51 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 13:03:51 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 13:03:55 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 13:03:55 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 14:46:17 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 14:46:17 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 14:46:38 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 14:46:38 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 14:46:42 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '12'
+INFO  2022-06-07 14:46:42 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '12'
+INFO  2022-06-07 14:46:45 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '123123123'
+INFO  2022-06-07 14:46:45 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '123123123'
+INFO  2022-06-07 14:46:47 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '123123123123123'
+INFO  2022-06-07 14:46:47 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - '123123123123123'
+INFO  2022-06-07 15:15:52 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 15:16:04 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 15:16:14 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - 'test'
+INFO  2022-06-07 15:21:13 [main] ru.miroshka.server.ChatServer (ChatServer.java:43) - Сервер запущен
+INFO  2022-06-07 15:21:21 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:53) - Клиент (test) подключился
+INFO  2022-06-07 15:21:46 [pool-2-thread-1] ru.miroshka.server.ClientHandler (ClientHandler.java:166) - Клиент (test) отправил всем сообщение - 'ура я с Вами'

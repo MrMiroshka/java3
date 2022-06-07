@@ -50,6 +50,7 @@ public class ClientHandler {
                     }
                 });
                 authenticate();
+                server.getLogger().info("Клиент ({}) подключился", () -> this.getNick());
                 readMessages();
                 server.getListActiveThreads().remove(Thread.currentThread());
                 //System.out.println("Завершился - " + Thread.currentThread().getName());
@@ -146,23 +147,29 @@ public class ClientHandler {
                 }
                 if (message.getCommand() == Command.CHANGENICK) {
                     final ChangeNick changeNick = (ChangeNick) message;
+                    String tempNick = this.nick;
+
                     if (authService.changeNick(changeNick.getNick(), changeNick.getNickNew())) {
                         this.nick = changeNick.getNickNew();
                         this.server.changeClient(this, changeNick.getNick());
                         server.broadcast(SimpleMessage.of("Ник - " + changeNick.getNick() + " сменился успешно на - " + changeNick.getNickNew() + " !", changeNick.getNickNew()));
                         server.sendMessageToClient(null, changeNick.getNickNew(), "Ник - " + changeNick.getNick() + " сменился успешно на - " + changeNick.getNickNew() + " !");
+                        server.getLogger().info("Клиент ({}) сменил ник на - '{}'", () -> tempNick, () -> this.nick);
                     } else {
                         server.sendMessageToClient(null, changeNick.getNick(), "Смена ника завершилась не удачно (" + changeNick.getNick() + " на " + changeNick.getNickNew() + ")!");
+                        server.getLogger().warn("У Клиент ({}) смена ника на - '{}', прошла не удачно!", () -> tempNick, () -> this.nick);
                     }
                 }
                 if (message.getCommand() == Command.MESSAGE) {
                     final SimpleMessage simpleMessage = (SimpleMessage) message;
                     server.broadcast(simpleMessage);
+                    server.getLogger().info("Клиент ({}) отправил всем сообщение - '{}'", () -> this.nick, () -> simpleMessage.getMessage());
                 }
                 if (message.getCommand() == Command.PRIVATE_MESSAGE) {
                     final PrivateMessage privateMessage = (PrivateMessage) message;
                     server.sendMessageToClient(this, privateMessage.getNickTo(), privateMessage.getMessage());
                     ChatsArhive.writeMessageToFile(privateMessage.getNickFrom(), privateMessage.getNickTo(), (AbstractMessage) privateMessage, (byte) 2);
+                    server.getLogger().info("Клиент ({}) отправил  сообщение  клиенту - '{}' --- сообщение: '{}'", () -> this.nick, () -> privateMessage.getNickTo(), () -> privateMessage.getMessage());
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

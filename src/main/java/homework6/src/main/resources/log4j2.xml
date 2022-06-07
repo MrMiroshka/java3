@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+    <Properties>
+        <Property name="basePath">logs</Property>
+    </Properties>
+    <Appenders>
+        <File name="FILE" fileName="${basePath}/logfile.log" append="true">
+            <PatternLayout pattern="%-5p %d{yyyy-MM-dd HH:mm:ss} [%t] %C (%F:%L) - %m%n" />
+        </File>
+        <Console name="cons" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"></PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="FirstLogger" level="info" additivity="false">
+            <AppenderRef ref="cons"/>
+            <AppenderRef ref="FILE" />
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="FILE" />
+        </Root>
+    </Loggers>
+</Configuration>
