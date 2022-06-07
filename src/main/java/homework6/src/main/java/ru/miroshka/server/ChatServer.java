@@ -47,7 +47,7 @@ public class ChatServer {
             while (true) {
                 System.out.println("Wait client connection...");
                 final Socket socket = serverSocket.accept();
-                ClientHandler cH = new ClientHandler(socket, this, authService, 120000);
+                new ClientHandler(socket, this, authService, 120000);
                 System.out.println("Client connected");
                 //{break;} - для воссозданияошибки- когда основной поток завершился, а другие еще нет
             }
@@ -62,6 +62,7 @@ public class ChatServer {
             thread.interrupt();
         }
         service.shutdownNow();
+        LOGGER.info("Сервер остановлен");
         //System.out.println(this.getListThreads().size());
 
     }

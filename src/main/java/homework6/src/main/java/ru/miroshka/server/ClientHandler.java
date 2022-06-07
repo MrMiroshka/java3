@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.logging.Logger;
 
 import ru.miroshka.message.*;
 
@@ -39,6 +40,7 @@ public class ClientHandler {
                         Thread.sleep(timeAuthLimit);
                         if ("".equals(ClientHandler.this.nick)) {
                             System.out.println("Вышло время для авторизации, соединение с клиентом будет прервано.");
+                            server.getLogger().warn("Клиент не смог авторизоваться, вышло время ожидания. Соединение закрыто.");
                             closeConnection();
 
                         }
@@ -50,12 +52,12 @@ public class ClientHandler {
                     }
                 });
                 authenticate();
-                server.getLogger().info("Клиент ({}) подключился", () -> this.getNick());
                 readMessages();
                 server.getListActiveThreads().remove(Thread.currentThread());
                 //System.out.println("Завершился - " + Thread.currentThread().getName());
             });
         } catch (IOException e) {
+            server.getLogger().error("У клиента ({}) - произошла критическая ошибка - {}", this.getNick(), e);
             throw new RuntimeException(e);
         }
 
@@ -103,6 +105,7 @@ public class ClientHandler {
                     if (nick != null) {
                         if (server.isNickBusy(nick)) {
                             sendMessage(ErrorMessage.of("Пользователь уже авторизован"));
+                            server.getLogger().warn("Пользователь c ником - {}, уже авторизован", nick);
                             continue;
                         }
                         sendMessage(AuthOkMessage.of(nick));
@@ -116,9 +119,11 @@ public class ClientHandler {
                         }
 
                         server.broadcast(SimpleMessage.of(nick, "Пользователь " + nick + " зашел в чат"));
+                        server.getLogger().info("Клиент ({}) подключился", () -> this.getNick());
                         break;
                     } else {
                         sendMessage(ErrorMessage.of("Неверные логин и пароль"));
+                        server.getLogger().error("Неверные логин = {} и пароль = {}", login, password);
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
